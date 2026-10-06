@@ -55,6 +55,32 @@ public class EnqueteService {
         return converterParaResponse(enquete);
     }
 
+    @Transactional
+    public EnqueteResponse abrir(Long id) {
+
+        Enquete enquete = enqueteRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Enquete não encontrada")
+                );
+
+        enquete.setAberta(true);
+
+        return converterParaResponse(enquete);
+    }
+
+    @Transactional
+    public EnqueteResponse fechar(Long id) {
+
+        Enquete enquete = enqueteRepository.findById(id)
+                .orElseThrow(() ->
+                        new RuntimeException("Enquete não encontrada")
+                );
+
+        enquete.setAberta(false);
+
+        return converterParaResponse(enquete);
+    }
+
     private EnqueteResponse converterParaResponse(Enquete enquete) {
 
         List<OpcaoResponse> opcoes = enquete.getOpcoes()

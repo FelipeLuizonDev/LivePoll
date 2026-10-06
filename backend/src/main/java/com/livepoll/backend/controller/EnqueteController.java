@@ -36,4 +36,14 @@ public class EnqueteController {
     public EnqueteResponse buscarPorId(@PathVariable Long id) {
         return enqueteService.buscarPorId(id);
     }
+
+    @PatchMapping("/{id}/abrir")
+    public EnqueteResponse abrir(@PathVariable Long id) {
+        return enqueteService.abrir(id);
+    }
+
+    @PatchMapping("/{id}/fechar")
+    public EnqueteResponse fechar(@PathVariable Long id) {
+        return enqueteService.fechar(id);
+    }
 }
