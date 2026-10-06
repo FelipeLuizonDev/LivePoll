@@ -1,0 +1,29 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+secrets/
+
+# Java / Maven
+**/target/
+*.class
+*.log
+
+# Node / React
+**/node_modules/
+**/dist/
+**/.vite/
+
+# Android / Gradle
+**/.gradle/
+**/build/
+**/local.properties
+**/.idea/
+**/*.iml
+**/captures/
+
+# IDE
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
