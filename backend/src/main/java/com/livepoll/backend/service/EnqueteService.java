@@ -5,6 +5,7 @@ import com.livepoll.backend.dto.EnqueteResponse;
 import com.livepoll.backend.dto.OpcaoResponse;
 import com.livepoll.backend.entity.Enquete;
 import com.livepoll.backend.entity.Opcao;
+import com.livepoll.backend.exception.EnqueteNotFoundException;
 import com.livepoll.backend.repository.EnqueteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +50,7 @@ public class EnqueteService {
 
         Enquete enquete = enqueteRepository.findById(id)
                 .orElseThrow(() ->
-                    new RuntimeException("Enquete não encontrada")
+                    new EnqueteNotFoundException(id)
                 );
 
         return converterParaResponse(enquete);
@@ -60,7 +61,7 @@ public class EnqueteService {
 
         Enquete enquete = enqueteRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Enquete não encontrada")
+                        new EnqueteNotFoundException(id)
                 );
 
         enquete.setAberta(true);
@@ -73,7 +74,7 @@ public class EnqueteService {
 
         Enquete enquete = enqueteRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Enquete não encontrada")
+                        new EnqueteNotFoundException(id)
                 );
 
         enquete.setAberta(false);
