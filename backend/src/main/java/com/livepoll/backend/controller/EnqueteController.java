@@ -31,4 +31,9 @@ public class EnqueteController {
     public List<EnqueteResponse> listar() {
         return enqueteService.listar();
     }
+
+    @GetMapping("/{id}")
+    public EnqueteResponse buscarPorId(@PathVariable Long id) {
+        return enqueteService.buscarPorId(id);
+    }
 }

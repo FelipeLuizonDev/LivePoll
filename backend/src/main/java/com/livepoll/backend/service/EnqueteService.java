@@ -35,13 +35,24 @@ public class EnqueteService {
         return converterParaResponse(salva);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<EnqueteResponse> listar() {
 
         return enqueteRepository.findAll()
                 .stream()
                 .map(this::converterParaResponse)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public EnqueteResponse buscarPorId(Long id) {
+
+        Enquete enquete = enqueteRepository.findById(id)
+                .orElseThrow(() ->
+                    new RuntimeException("Enquete não encontrada")
+                );
+
+        return converterParaResponse(enquete);
     }
 
     private EnqueteResponse converterParaResponse(Enquete enquete) {
