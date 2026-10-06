@@ -10,7 +10,10 @@ import com.livepoll.backend.repository.EnqueteRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 @Service
 public class EnqueteService {
@@ -23,6 +26,8 @@ public class EnqueteService {
 
     @Transactional
     public EnqueteResponse criar(EnqueteRequest request) {
+
+        validarOpcoesDuplicadas(request.opcoes());
 
         Enquete enquete = new Enquete(request.titulo());
 
@@ -98,5 +103,22 @@ public class EnqueteService {
                 enquete.getAberta(),
                 opcoes
         );
+    }
+
+    private void validarOpcoesDuplicadas(List<String> opcoes) {
+
+        Set<String> opcoesNormalizadas = new HashSet<>();
+
+        for (String opcao : opcoes) {
+            String opcaoNormalizada = opcao
+                    .trim()
+                    .toLowerCase(Locale.ROOT);
+
+            if (!opcoesNormalizadas.add(opcaoNormalizada)) {
+                throw new IllegalArgumentException(
+                        "A enquete não pode possuir opções duplicadas"
+                );
+            }
+        }
     }
 }
