@@ -55,4 +55,10 @@ public class RedisService {
         redisTemplate.opsForHash()
                 .put(chave, campo, quantidade.toString());
     }
+
+    public boolean existeContador(Long enqueteId) {
+        String chave = "livepoll:enquete:" + enqueteId + ":votos";
+
+        return Boolean.TRUE.equals(redisTemplate.hasKey(chave));
+    }
 }
