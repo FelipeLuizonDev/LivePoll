@@ -37,4 +37,22 @@ public class RedisService {
 
         return valor != null ? valor.toString() : "0";
     }
+
+    public void limparContadores(Long enqueteId) {
+        String chave = "livepoll:enquete:" + enqueteId + ":votos";
+
+        redisTemplate.delete(chave);
+    }
+
+    public void definirVotos(
+            Long enqueteId,
+            Long opcaoId,
+            Long quantidade
+    ) {
+        String chave = "livepoll:enquete:" + enqueteId + ":votos";
+        String campo = "opcao:" + opcaoId;
+
+        redisTemplate.opsForHash()
+                .put(chave, campo, quantidade.toString());
+    }
 }
