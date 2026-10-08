@@ -49,6 +49,10 @@ function Enquetes() {
               </p>
 
               <p>Opções: {enquete.opcoes.length}</p>
+
+              <Link to={`/resultados?id=${enquete.id}`}>
+                Ver resultados
+              </Link>
             </li>
           ))}
         </ul>
