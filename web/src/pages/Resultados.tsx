@@ -1,67 +1,86 @@
-import { useEffect, useState } from "react";
-import { buscarResultados, type ResultadoEnquete } from "../services/enqueteService";
+import { useEffect, useState } from 'react'
+import {
+  buscarResultados,
+  type ResultadoEnquete,
+} from '../services/enqueteService'
 
 function Resultados() {
-    const [resultado, setResultado] = useState<ResultadoEnquete | null>(null)
-    const [carregando, setCarregando] = useState(true)
-    const [erro, setErro] = useState<string | null>(null)
+  const [resultado, setResultado] = useState<ResultadoEnquete | null>(null)
+  const [carregando, setCarregando] = useState(true)
+  const [erro, setErro] = useState<string | null>(null)
 
-    useEffect(() => {
-        async function carregarResultados() {
-            try {
-                const params = new URLSearchParams(window.location.search)
-                const enqueteId = Number(params.get('id'))
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const enqueteId = Number(params.get('id'))
 
-                if (!enqueteId) {
-                    throw new Error("ID da enquete não informado.")
-                }
-
-                const dados = await buscarResultados(enqueteId)
-                setResultado(dados)
-            } catch {
-                setErro('Não foi possível carregar os resultados.')
-            } finally {
-                setCarregando(false)
-            }
-        }
-
-        carregarResultados()
-    }, [])
-
-    if (carregando) {
-        return <p>Carregando resultados...</p>
+    if (!enqueteId) {
+      setErro('ID da enquete não informado.')
+      setCarregando(false)
+      return
     }
 
-    if (erro) {
-        return <p>{erro}</p>
+    async function carregarResultados() {
+      try {
+        const dados = await buscarResultados(enqueteId)
+
+        setResultado(dados)
+        setErro(null)
+      } catch {
+        setErro('Não foi possível carregar os resultados.')
+      } finally {
+        setCarregando(false)
+      }
     }
 
-    if (!resultado) {
-        return <p>Resultados não encontrados.</p>
+    carregarResultados()
+
+    const intervalo = setInterval(() => {
+      carregarResultados()
+    }, 3000)
+
+    return () => {
+      clearInterval(intervalo)
     }
+  }, [])
 
-    return (
-        <main>
-            <h1>{resultado.titulo}</h1>
+  if (carregando) {
+    return <p>Carregando resultados...</p>
+  }
 
-            <p>
-                Total de votos: {' '}
-                {resultado.opcoes.reduce((total, opcao) => total + opcao.votos, 0)}
-            </p>
+  if (erro && !resultado) {
+    return <p>{erro}</p>
+  }
 
-            <h2>Resultados</h2>
+  if (!resultado) {
+    return <p>Resultados não encontrados.</p>
+  }
 
-            <ul>
-                {resultado.opcoes.map((opcao) => (
-                    <li key={opcao.opcaoId}>
-                        <strong>{opcao.textoOpcao}</strong>
+  const totalVotos = resultado.opcoes.reduce(
+    (total, opcao) => total + opcao.votos,
+    0,
+  )
 
-                        <p>Votos: {opcao.votos}</p>
-                    </li>
-                ))}
-            </ul>
-        </main>
-    )
+  return (
+    <main>
+      <h1>{resultado.titulo}</h1>
+
+      <p>Total de votos: {totalVotos}</p>
+
+      <h2>Resultados</h2>
+
+      <ul>
+        {resultado.opcoes.map((opcao) => (
+          <li key={opcao.opcaoId}>
+            <strong>{opcao.textoOpcao}</strong>
+
+            <p>Votos: {opcao.votos}</p>
+          </li>
+        ))}
+      </ul>
+
+      {erro && <p>{erro}</p>}
+    </main>
+  )
 }
 
 export default Resultados
