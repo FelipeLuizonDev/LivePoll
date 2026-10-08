@@ -3,6 +3,7 @@ import Enquetes from './pages/Enquetes'
 import Home from './pages/Home'
 import Header from './components/Header'
 import CriarEnquete from './pages/CriarEnquete'
+import Resultados from './pages/Resultados'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/enquetes" element={<Enquetes />} />
         <Route path="/enquetes/nova" element={<CriarEnquete />} />
+        <Route path="/resultados" element={<Resultados />} />
       </Routes>
     </BrowserRouter>
   )
