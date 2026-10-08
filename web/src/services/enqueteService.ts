@@ -12,6 +12,11 @@ export interface Enquete {
     opcoes: Opcao[]
 }
 
+export interface CriarEnqueteRequest {
+    titulo: string
+    opcoes: string[]
+}
+
 export async function buscarEnquete(id: number): Promise<Enquete> {
     const response = await api.get<Enquete>(`/enquetes/${id}`)
 
@@ -20,6 +25,12 @@ export async function buscarEnquete(id: number): Promise<Enquete> {
 
 export async function listarEnquetes(): Promise<Enquete[]> {
     const response = await api.get<Enquete[]>(`/enquetes`)
+
+    return response.data;
+}
+
+export async function criarEnquete(dados: CriarEnqueteRequest): Promise<Enquete> {
+    const response = await api.post<Enquete>('/enquetes', dados)
 
     return response.data;
 }
