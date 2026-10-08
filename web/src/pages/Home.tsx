@@ -9,7 +9,14 @@ function Home() {
   useEffect(() => {
     async function carregarEnquete() {
       try {
-        const dados = await buscarEnquete(19)
+        const params = new URLSearchParams(window.location.search)
+        const enqueteId = Number(params.get('id'))
+
+        if (!enqueteId) {
+          throw new Error("ID da enquete não informado.")
+        }
+        
+        const dados = await buscarEnquete(enqueteId)
         setEnquete(dados)
       } catch {
         setErro('Não foi possível carregar a enquete.')
