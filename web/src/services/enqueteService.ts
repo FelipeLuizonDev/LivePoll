@@ -55,3 +55,15 @@ export async function buscarResultados(enqueteId: number): Promise<ResultadoEnqu
 
     return response.data;
 }
+
+export async function abrirEnquete(id: number): Promise<Enquete> {
+    const response = await api.patch<Enquete>(`/enquetes/${id}/abrir`)
+
+    return response.data
+}
+
+export async function fecharEnquete(id: number): Promise<Enquete> {
+    const response = await api.patch<Enquete>(`/enquetes/${id}/fechar`)
+
+    return response.data
+}
