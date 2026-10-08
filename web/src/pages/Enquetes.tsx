@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { listarEnquetes, type Enquete } from '../services/enqueteService'
+import { Link } from 'react-router'
 
 function Enquetes() {
   const [enquetes, setEnquetes] = useState<Enquete[]>([])
@@ -39,7 +40,9 @@ function Enquetes() {
         <ul>
           {enquetes.map((enquete) => (
             <li key={enquete.id}>
-              <strong>{enquete.titulo}</strong>
+              <Link to={`/?id=${enquete.id}`}>
+                <strong>{enquete.titulo}</strong>
+              </Link>
 
               <p>
                 Status: {enquete.aberta ? 'Aberta' : 'Fechada'}
