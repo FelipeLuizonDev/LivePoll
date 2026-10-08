@@ -1,9 +1,16 @@
+import { Link } from "react-router-dom"
+
 function Header() {
   return (
-    <main>
+    <header>
       <h1>LivePoll</h1>
-      <p>Sistema de votação em tempo real</p>
-    </main>
+
+      <nav>
+        <Link to="/">Início</Link>
+        {' | '}
+        <Link to="/enquetes">Enquetes</Link>
+      </nav>
+    </header>
   )
 }
 

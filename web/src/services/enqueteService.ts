@@ -17,3 +17,9 @@ export async function buscarEnquete(id: number): Promise<Enquete> {
 
     return response.data;
 }
+
+export async function listarEnquetes(): Promise<Enquete[]> {
+    const response = await api.get<Enquete[]>(`/enquetes`)
+
+    return response.data;
+}
