@@ -40,7 +40,11 @@ class MainActivity : AppCompatActivity() {
                 val api = RetrofitClient.criarApi(this@MainActivity)
                 val enquetes = api.listarEnquetes()
 
-                rvListarEnquetes.adapter = EnqueteAdapter(enquetes)
+                rvListarEnquetes.adapter = EnqueteAdapter(enquetes) { enquete ->
+                    if (enquete.aberta) {
+                        tvMensagem.text = "Enquete selecionada: ${enquete.titulo}"
+                    }
+                }
 
                 tvMensagem.text = if (enquetes.isEmpty()) {
                     "Nenhuma enquete encontrada."

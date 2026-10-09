@@ -9,7 +9,8 @@ import com.livepoll.mobile.R
 import com.livepoll.mobile.api.EnqueteResponse
 
 class EnqueteAdapter(
-    private val enquetes: List<EnqueteResponse>
+    private val enquetes: List<EnqueteResponse>,
+    private val aoClicar: (EnqueteResponse) -> Unit
 ): RecyclerView.Adapter<EnqueteAdapter.EnqueteViewHolder>() {
 
     class EnqueteViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
@@ -34,6 +35,13 @@ class EnqueteAdapter(
         holder.tvStatusEnquete.text = if (enquete.aberta) "Status: Aberta" else "Status: Fechada"
 
         holder.tvQuantidadeOpcoes.text = "Opções: ${enquete.opcoes.size}"
+
+        holder.itemView.setOnClickListener {
+            aoClicar(enquete)
+        }
+
+        holder.itemView.isClickable = enquete.aberta
+        holder.itemView.isFocusable = enquete.aberta
     }
 
     override fun getItemCount(): Int = enquetes.size
