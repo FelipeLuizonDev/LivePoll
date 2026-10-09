@@ -98,12 +98,18 @@ class VotacaoActivity: AppCompatActivity() {
                     )
 
                     if (resposta.isSuccessful) {
-                        tvMensagemVotacao.text = "Voto registrado com sucesso!"
-                        rgOpcoes.isEnabled = false
-
-                        for (i in 0 until rgOpcoes.childCount) {
-                            rgOpcoes.getChildAt(i).isEnabled = false
+                        val intent = android.content.Intent(
+                            this@VotacaoActivity,
+                            ResultadosActivity::class.java
+                        ).apply {
+                            putExtra(
+                                ResultadosActivity.EXTRA_ENQUETE_ID,
+                                enqueteId
+                            )
                         }
+
+                        startActivity(intent)
+                        finish()
                     } else {
                         tvMensagemVotacao.text =
                             "Não foi possível registrar o voto. Verifique se a enquete continua aberta."

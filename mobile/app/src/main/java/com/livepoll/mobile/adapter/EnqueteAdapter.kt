@@ -39,9 +39,6 @@ class EnqueteAdapter(
         holder.itemView.setOnClickListener {
             aoClicar(enquete)
         }
-
-        holder.itemView.isClickable = enquete.aberta
-        holder.itemView.isFocusable = enquete.aberta
     }
 
     override fun getItemCount(): Int = enquetes.size

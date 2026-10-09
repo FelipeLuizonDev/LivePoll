@@ -22,6 +22,19 @@ data class VotoRequest(
     val opcaoId: Long
 )
 
+data class ResultadoEnqueteResponse(
+    val enqueteId: Long,
+    val titulo: String,
+    val aberta: Boolean,
+    val opcoes: List<ResultadoOpcaoResponse>
+)
+
+data class ResultadoOpcaoResponse(
+    val opcaoId: Long,
+    val textoOpcao: String,
+    val votos: Long
+)
+
 interface LivePollApi {
 
     @GET("enquetes")
@@ -32,4 +45,9 @@ interface LivePollApi {
         @Path("id") enqueteId: Long,
         @Body request: VotoRequest
     ) : Response<Unit>
+
+    @GET("enquetes/{id}/resultados")
+    suspend fun buscarResultados(
+        @Path("id")enqueteId: Long
+    ): ResultadoEnqueteResponse
 }

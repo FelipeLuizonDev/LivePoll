@@ -41,21 +41,32 @@ class MainActivity : AppCompatActivity() {
                 val enquetes = api.listarEnquetes()
 
                 rvListarEnquetes.adapter = EnqueteAdapter(enquetes) { enquete ->
-                    val intent = android.content.Intent(
-                        this@MainActivity, VotacaoActivity::class.java
-                    ).apply {
-                        putExtra(VotacaoActivity.EXTRA_ID, enquete.id)
-                        putExtra(VotacaoActivity.EXTRA_TITULO, enquete.titulo)
+                    val intent = if (enquete.aberta) {
+                            android.content.Intent(
+                                this@MainActivity, VotacaoActivity::class.java
+                            ).apply {
+                                putExtra(VotacaoActivity.EXTRA_ID, enquete.id)
+                                putExtra(VotacaoActivity.EXTRA_TITULO, enquete.titulo)
 
-                        putExtra(
-                            VotacaoActivity.EXTRA_OPCAO_IDS,
-                            enquete.opcoes.map { it.id }.toLongArray()
-                        )
+                                putExtra(
+                                    VotacaoActivity.EXTRA_OPCAO_IDS,
+                                    enquete.opcoes.map { it.id }.toLongArray()
+                                )
 
-                        putStringArrayListExtra(
-                            VotacaoActivity.EXTRA_OPCOES,
-                            ArrayList(enquete.opcoes.map { it.textoOpcao })
-                        )
+                                putStringArrayListExtra(
+                                    VotacaoActivity.EXTRA_OPCOES,
+                                    ArrayList(enquete.opcoes.map { it.textoOpcao })
+                                )
+                        }
+                    } else {
+                        android.content.Intent(
+                            this@MainActivity, ResultadosActivity::class.java
+                        ).apply {
+                            putExtra(
+                                ResultadosActivity.EXTRA_ENQUETE_ID,
+                                enquete.id
+                            )
+                        }
                     }
 
                     startActivity(intent)

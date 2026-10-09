@@ -28,6 +28,10 @@
         <activity
             android:name=".VotacaoActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".ResultadosActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
