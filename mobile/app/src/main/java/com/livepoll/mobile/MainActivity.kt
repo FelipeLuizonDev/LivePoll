@@ -41,9 +41,19 @@ class MainActivity : AppCompatActivity() {
                 val enquetes = api.listarEnquetes()
 
                 rvListarEnquetes.adapter = EnqueteAdapter(enquetes) { enquete ->
-                    if (enquete.aberta) {
-                        tvMensagem.text = "Enquete selecionada: ${enquete.titulo}"
+                    val intent = android.content.Intent(
+                        this@MainActivity, VotacaoActivity::class.java
+                    ).apply {
+                        putExtra(VotacaoActivity.EXTRA_ID, enquete.id)
+                        putExtra(VotacaoActivity.EXTRA_TITULO, enquete.titulo)
+
+                        putStringArrayListExtra(
+                            VotacaoActivity.EXTRA_OPCOES,
+                            ArrayList(enquete.opcoes.map { it.textoOpcao })
+                        )
                     }
+
+                    startActivity(intent)
                 }
 
                 tvMensagem.text = if (enquetes.isEmpty()) {
