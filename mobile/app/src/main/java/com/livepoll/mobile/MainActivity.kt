@@ -47,6 +47,11 @@ class MainActivity : AppCompatActivity() {
                         putExtra(VotacaoActivity.EXTRA_ID, enquete.id)
                         putExtra(VotacaoActivity.EXTRA_TITULO, enquete.titulo)
 
+                        putExtra(
+                            VotacaoActivity.EXTRA_OPCAO_IDS,
+                            enquete.opcoes.map { it.id }.toLongArray()
+                        )
+
                         putStringArrayListExtra(
                             VotacaoActivity.EXTRA_OPCOES,
                             ArrayList(enquete.opcoes.map { it.textoOpcao })
