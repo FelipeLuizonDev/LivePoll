@@ -1,4 +1,6 @@
+
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { criarEnquete as criarEnqueteApi } from '../services/enqueteService'
 
 function CriarEnquete() {
@@ -9,17 +11,13 @@ function CriarEnquete() {
   const [carregando, setCarregando] = useState(false)
 
   function adicionarOpcao() {
-    if (opcoes.length >= 10) {
-      return
-    }
+    if (opcoes.length >= 10) return
 
     setOpcoes([...opcoes, ''])
   }
 
   function removerOpcao(index: number) {
-    if (opcoes.length <= 2) {
-      return
-    }
+    if (opcoes.length <= 2) return
 
     setOpcoes(opcoes.filter((_, i) => i !== index))
   }
@@ -27,7 +25,6 @@ function CriarEnquete() {
   function atualizarOpcao(index: number, valor: string) {
     const novasOpcoes = [...opcoes]
     novasOpcoes[index] = valor
-
     setOpcoes(novasOpcoes)
   }
 
@@ -70,74 +67,135 @@ function CriarEnquete() {
       setTitulo('')
       setOpcoes(['', ''])
     } catch {
-      setErro('Não foi possível criar a enquete.')
+      setErro('Não foi possível criar a enquete. Tente novamente.')
     } finally {
       setCarregando(false)
     }
   }
 
   return (
-    <main>
-      <h1>Nova enquete</h1>
-
-      <div>
-        <label htmlFor="titulo">Título</label>
-
-        <input
-          id="titulo"
-          type="text"
-          value={titulo}
-          onChange={(event) => setTitulo(event.target.value)}
-          placeholder="Digite o título da enquete"
-          maxLength={200}
-        />
+    <main className="create-page">
+      <div className="create-heading">
+        <span className="home-eyebrow">NOVA VOTAÇÃO</span>
+        <h1>Criar enquete</h1>
+        <p>
+          Cadastre uma pergunta e as opções para começar
+          uma nova votação.
+        </p>
       </div>
 
-      <div>
-        <h2>Opções</h2>
+      <section className="create-card">
+        <div className="form-section">
+          <label className="form-label" htmlFor="titulo">
+            Pergunta da enquete
+          </label>
 
-        {opcoes.map((opcao, index) => (
-          <div key={index}>
-            <input
-              type="text"
-              value={opcao}
-              onChange={(event) =>
-                atualizarOpcao(index, event.target.value)
-              }
-              placeholder={`Opção ${index + 1}`}
-              maxLength={100}
-            />
+          <input
+            className="form-input"
+            id="titulo"
+            type="text"
+            value={titulo}
+            onChange={(event) => setTitulo(event.target.value)}
+            placeholder="Ex.: Qual linguagem você prefere?"
+            maxLength={200}
+            disabled={carregando}
+          />
 
-            <button
-              type="button"
-              onClick={() => removerOpcao(index)}
-              disabled={opcoes.length <= 2}
-            >
-              Remover
-            </button>
+          <p className="field-hint">
+            Use entre 3 e 200 caracteres.
+            <span>{titulo.length}/200</span>
+          </p>
+        </div>
+
+        <div className="form-section">
+          <div className="options-heading">
+            <div>
+              <h2>Opções de resposta</h2>
+              <p>Adicione de 2 a 10 opções para votação.</p>
+            </div>
+
+            <span className="options-count">
+              {opcoes.length}/10
+            </span>
           </div>
-        ))}
 
-        <button
-          type="button"
-          onClick={adicionarOpcao}
-          disabled={opcoes.length >= 10}
-        >
-          Adicionar opção
-        </button>
-      </div>
+          <div className="options-list">
+            {opcoes.map((opcao, index) => (
+              <div className="option-field" key={index}>
+                <label
+                  className="option-number"
+                  htmlFor={`opcao-${index}`}
+                >
+                  {index + 1}
+                </label>
 
-      {erro && <p>{erro}</p>}
+                <input
+                  className="form-input"
+                  id={`opcao-${index}`}
+                  type="text"
+                  value={opcao}
+                  onChange={(event) =>
+                    atualizarOpcao(index, event.target.value)
+                  }
+                  placeholder={`Digite a opção ${index + 1}`}
+                  maxLength={100}
+                  disabled={carregando}
+                />
 
-      {sucesso && <p>Enquete criada com sucesso!</p>}
+                <button
+                  type="button"
+                  className="remove-option"
+                  onClick={() => removerOpcao(index)}
+                  disabled={opcoes.length <= 2 || carregando}
+                  aria-label={`Remover opção ${index + 1}`}
+                  title="Remover opção"
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
 
-      <button
-        type="button"
-        onClick={criarNovaEnquete}
-        disabled={carregando}
-      >
-        {carregando ? 'Criando...' : 'Criar enquete'}
-      </button>
+          <button
+            type="button"
+            className="add-option"
+            onClick={adicionarOpcao}
+            disabled={opcoes.length >= 10 || carregando}
+          >
+            + Adicionar opção
+          </button>
+        </div>
+
+        {erro && (
+          <div className="form-alert form-alert-error" role="alert">
+            <strong>Não foi possível continuar</strong>
+            <p>{erro}</p>
+          </div>
+        )}
+
+        {sucesso && (
+          <div className="form-alert form-alert-success" role="status">
+            <strong>Enquete criada com sucesso!</strong>
+            <p>Ela já pode ser consultada na lista de enquetes.</p>
+            <Link to="/enquetes">Ver minhas enquetes →</Link>
+          </div>
+        )}
+
+        <div className="form-footer">
+          <Link to="/enquetes" className="button-secondary">
+            Cancelar
+          </Link>
+
+          <button
+            type="button"
+            className="button-primary"
+            onClick={criarNovaEnquete}
+            disabled={carregando}
+          >
+            {carregando ? 'Criando enquete...' : 'Criar enquete'}
+          </button>
+        </div>
+      </section>
     </main>
   )
 }

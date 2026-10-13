@@ -1,11 +1,12 @@
+
 import { useEffect, useState } from 'react'
-import { 
+import { Link } from 'react-router-dom'
+import {
   abrirEnquete,
   fecharEnquete,
-  listarEnquetes, 
+  listarEnquetes,
   type Enquete,
 } from '../services/enqueteService'
-import { Link } from 'react-router'
 
 function Enquetes() {
   const [enquetes, setEnquetes] = useState<Enquete[]>([])
@@ -28,17 +29,10 @@ function Enquetes() {
     carregarEnquetes()
   }, [])
 
-  if (carregando) {
-    return <p>Carregando enquetes...</p>
-  }
-
-  if (erro) {
-    return <p>{erro}</p>
-  }
-
   async function alterarStatus(enquete: Enquete) {
     try {
       setAlterandoStatus(enquete.id)
+      setErro(null)
 
       const enqueteAtualizada = enquete.aberta
         ? await fecharEnquete(enquete.id)
@@ -49,8 +43,6 @@ function Enquetes() {
           item.id === enquete.id ? enqueteAtualizada : item,
         ),
       )
-
-      setErro(null)
     } catch {
       setErro('Não foi possível alterar o status da enquete.')
     } finally {
@@ -58,44 +50,99 @@ function Enquetes() {
     }
   }
 
+  if (carregando) {
+    return (
+      <main className="polls-page">
+        <p className="page-feedback">Carregando enquetes...</p>
+      </main>
+    )
+  }
+
   return (
-    <main>
-      <h1>Enquetes</h1>
+    <main className="polls-page">
+      <section className="page-heading">
+        <div>
+          <span className="home-eyebrow">PAINEL DE GERENCIAMENTO</span>
+          <h1>Enquetes</h1>
+          <p>Gerencie suas votações e acompanhe os resultados.</p>
+        </div>
+
+        <Link to="/enquetes/nova" className="button-primary">
+          + Criar enquete
+        </Link>
+      </section>
+
+      {erro && (
+        <p className="page-feedback error-feedback" role="alert">
+          {erro}
+        </p>
+      )}
+
+      <div className="polls-summary">
+        <strong>{enquetes.length}</strong>
+        <span>
+          {enquetes.length === 1 ? 'enquete cadastrada' : 'enquetes cadastradas'}
+        </span>
+      </div>
 
       {enquetes.length === 0 ? (
-        <p>Nenhuma enquete encontrada.</p>
+        <section className="empty-state">
+          <span className="feature-icon" aria-hidden="true">＋</span>
+          <h2>Nenhuma enquete por aqui</h2>
+          <p>Crie sua primeira enquete para começar a receber votos.</p>
+          <Link to="/enquetes/nova" className="button-primary">
+            Criar primeira enquete
+          </Link>
+        </section>
       ) : (
-        <ul>
+        <section className="polls-list" aria-label="Lista de enquetes">
           {enquetes.map((enquete) => (
-            <li key={enquete.id}>
-              <Link to={`/?id=${enquete.id}`}>
-                <strong>{enquete.titulo}</strong>
-              </Link>
+            <article className="poll-card" key={enquete.id}>
+              <div className="poll-card-main">
+                <div className="poll-card-title">
+                  <h2>{enquete.titulo}</h2>
+                  <span
+                    className={`status-badge ${
+                      enquete.aberta ? 'status-open' : 'status-closed'
+                    }`}
+                  >
+                    <span className="status-dot" aria-hidden="true" />
+                    {enquete.aberta ? 'Aberta' : 'Fechada'}
+                  </span>
+                </div>
 
-              <p>
-                Status: {enquete.aberta ? 'Aberta' : 'Fechada'}
-              </p>
+                <p className="poll-card-meta">
+                  {enquete.opcoes.length}{' '}
+                  {enquete.opcoes.length === 1 ? 'opção' : 'opções'}
+                </p>
+              </div>
 
-              <button
-                type="button"
-                onClick={() => alterarStatus(enquete)}
-                disabled={alterandoStatus === enquete.id}
-              >
-                {alterandoStatus === enquete.id
-                  ? 'Alterando...'
-                  : enquete.aberta
-                    ? 'Fechar enquete'
-                    : 'Abrir enquete'}
-              </button>
+              <div className="poll-card-actions">
+                <Link
+                  to={`/resultados?id=${enquete.id}`}
+                  className="button-secondary"
+                >
+                  Ver resultados
+                </Link>
 
-              <p>Opções: {enquete.opcoes.length}</p>
-
-              <Link to={`/resultados?id=${enquete.id}`}>
-                Ver resultados
-              </Link>
-            </li>
+                <button
+                  type="button"
+                  className={
+                    enquete.aberta ? 'button-danger' : 'button-primary'
+                  }
+                  onClick={() => alterarStatus(enquete)}
+                  disabled={alterandoStatus !== null}
+                >
+                  {alterandoStatus === enquete.id
+                    ? 'Alterando...'
+                    : enquete.aberta
+                      ? 'Fechar enquete'
+                      : 'Abrir enquete'}
+                </button>
+              </div>
+            </article>
           ))}
-        </ul>
+        </section>
       )}
     </main>
   )

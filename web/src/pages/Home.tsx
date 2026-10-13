@@ -1,60 +1,69 @@
-import { useEffect, useState } from 'react'
-import { buscarEnquete, type Enquete } from '../services/enqueteService'
+
+import { Link } from 'react-router-dom'
 
 function Home() {
-  const [enquete, setEnquete] = useState<Enquete | null>(null)
-  const [carregando, setCarregando] = useState(true)
-  const [erro, setErro] = useState<string | null>(null)
-
-  useEffect(() => {
-    async function carregarEnquete() {
-      try {
-        const params = new URLSearchParams(window.location.search)
-        const enqueteId = Number(params.get('id'))
-
-        if (!enqueteId) {
-          throw new Error("ID da enquete não informado.")
-        }
-        
-        const dados = await buscarEnquete(enqueteId)
-        setEnquete(dados)
-      } catch {
-        setErro('Não foi possível carregar a enquete.')
-      } finally {
-        setCarregando(false)
-      }
-    }  
-
-    carregarEnquete()
-  }, [])
-
-  if (carregando) {
-    return <p>Carregando...</p>
-  }
-
-  if (erro) {
-    return <p>{erro}</p>
-  }
-
-  if (!enquete) {
-    return <p>Enquete não encontrada.</p>
-  }
-
   return (
-    <main>
-      <h1>{enquete.titulo}</h1>
+    <main className="home-page">
+      <section className="home-hero">
+        <span className="home-eyebrow">
+          VOTAÇÃO EM TEMPO REAL
+        </span>
 
-      <p>
-        Status: {enquete.aberta ? 'Aberta' : 'Fechada'}
-      </p>
+        <h1>
+          Suas ideias.
+          <br />
+          Seus votos.
+          <br />
+          <span>Seus resultados.</span>
+        </h1>
 
-      <h2>Opções</h2>
+        <p className="home-description">
+          Crie enquetes, acompanhe as votações e visualize
+          os resultados em tempo real com o LivePoll.
+        </p>
 
-      <ul>
-        {enquete.opcoes.map((opcao) => (
-          <li key={opcao.id}>{opcao.textoOpcao}</li>
-        ))}
-      </ul>
+        <div className="home-actions">
+          <Link to="/enquetes/nova" className="button-primary">
+            + Criar enquete
+          </Link>
+
+          <Link to="/enquetes" className="button-secondary">
+            Ver enquetes
+          </Link>
+        </div>
+      </section>
+
+      <section className="home-features">
+        <article className="feature-card">
+          <span className="feature-icon">＋</span>
+          <h2>Crie enquetes</h2>
+          <p>
+            Cadastre uma pergunta e suas opções de votação
+            de forma simples.
+          </p>
+          <Link to="/enquetes/nova">Criar uma enquete →</Link>
+        </article>
+
+        <article className="feature-card">
+          <span className="feature-icon">☷</span>
+          <h2>Gerencie votações</h2>
+          <p>
+            Consulte suas enquetes e controle quando
+            elas estão abertas ou fechadas.
+          </p>
+          <Link to="/enquetes">Gerenciar enquetes →</Link>
+        </article>
+
+        <article className="feature-card">
+          <span className="feature-icon">↗</span>
+          <h2>Acompanhe resultados</h2>
+          <p>
+            Visualize os votos registrados e acompanhe
+            a evolução dos resultados.
+          </p>
+          <Link to="/enquetes">Ver resultados →</Link>
+        </article>
+      </section>
     </main>
   )
 }
