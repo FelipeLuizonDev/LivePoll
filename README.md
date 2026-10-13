@@ -125,7 +125,7 @@ LivePoll/
 ## Clone repository
 
 ```bash
-git clone https://github.com/FelipeLuizonDev/cursos-api
+git clone https://github.com/FelipeLuizonDev/LivePoll.git
 cd LivePoll
 ```
 
